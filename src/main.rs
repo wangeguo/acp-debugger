@@ -15,29 +15,8 @@
 use gpui::*;
 use gpui_component::Root;
 
-struct AcpDebugger {
-    text: SharedString,
-}
-
-impl AcpDebugger {
-    fn new() -> Self {
-        Self { text: "ACP Debugger".into() }
-    }
-}
-
-impl Render for AcpDebugger {
-    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-        div()
-            .flex()
-            .bg(rgb(0x2e3440))
-            .size_full()
-            .justify_center()
-            .items_center()
-            .text_xl()
-            .text_color(rgb(0xeceff4))
-            .child(self.text.clone())
-    }
-}
+mod app;
+mod panels;
 
 fn main() {
     let app = Application::new();
@@ -48,7 +27,7 @@ fn main() {
 
         cx.spawn(async move |cx| {
             cx.open_window(WindowOptions::default(), |window, cx| {
-                let view = cx.new(|_| AcpDebugger::new());
+                let view = cx.new(|_| app::AcpDebugger);
                 // This first level on the window, should be a Root.
                 cx.new(|cx| Root::new(view, window, cx))
             })?;
