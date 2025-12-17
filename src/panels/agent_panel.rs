@@ -13,12 +13,37 @@
 // limitations under the License.
 
 use gpui::*;
+use gpui_component::{ActiveTheme as _, IconName};
 
 #[derive(IntoElement)]
 pub struct AgentPanel;
 
+impl AgentPanel {
+    fn header(&self, cx: &App) -> impl IntoElement {
+        div()
+            .flex()
+            .items_center()
+            .justify_between()
+            .px_3()
+            .py_2()
+            .border_b_1()
+            .border_color(cx.theme().title_bar_border)
+            .child(
+                div()
+                    .flex()
+                    .items_center()
+                    .gap_2()
+                    .child(IconName::SquareTerminal)
+                    .child("New Thread"),
+            )
+            .child(IconName::Plus)
+    }
+}
+
 impl RenderOnce for AgentPanel {
-    fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
-        div().flex().size_full().justify_center().items_center().text_xl().child("Agent Panel")
+    fn render(self, _: &mut Window, cx: &mut App) -> impl IntoElement {
+        div().flex().flex_col().size_full().child(self.header(cx)).child(
+            div().flex_1().flex().justify_center().items_center().text_xl().child("Agent Panel"),
+        )
     }
 }
