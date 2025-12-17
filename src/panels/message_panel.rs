@@ -13,20 +13,40 @@
 // limitations under the License.
 
 use gpui::*;
+use gpui_component::{scroll::ScrollableElement, v_flex};
+
+use crate::components::MessageItem;
 
 #[derive(IntoElement)]
 pub struct MessagePanel;
 
 impl RenderOnce for MessagePanel {
     fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {
-        div()
-            .flex()
-            .bg(rgb(0x2e3440))
+        v_flex()
+            .id("scrollable-messages-container")
             .size_full()
-            .justify_center()
-            .items_center()
-            .text_xl()
-            .text_color(rgb(0xeceff4))
-            .child("Message Panel")
+            .bg(rgb(0x2e3440))
+            .overflow_y_scrollbar()
+            .p_4()
+            .child(MessageItem::new("initialize", false))
+            .child(MessageItem::new("initialize response", true))
+            .child(MessageItem::new("authenticate", false))
+            .child(MessageItem::new("authenticate response", true))
+            .child(MessageItem::new("session/new", false))
+            .child(MessageItem::new("session/new response", true))
+            .child(MessageItem::new("tools/list", false))
+            .child(MessageItem::new("tools/list response", true))
+            .child(MessageItem::new("prompts/get", false))
+            .child(MessageItem::new("prompts/get response", true))
+            .child(MessageItem::new("resources/read", false))
+            .child(MessageItem::new("resources/read response", true))
+            .child(MessageItem::new("completion/complete", false))
+            .child(MessageItem::new("completion/complete response", true))
+            .child(MessageItem::new("logging/setLevel", false))
+            .child(MessageItem::new("logging/setLevel response", true))
+            .child(MessageItem::new("sampling/createMessage", false))
+            .child(MessageItem::new("sampling/createMessage response", true))
+            .child(MessageItem::new("roots/list", false))
+            .child(MessageItem::new("roots/list response", true))
     }
 }

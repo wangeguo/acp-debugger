@@ -16,6 +16,7 @@ use gpui::*;
 use gpui_component::Root;
 
 mod app;
+mod components;
 mod panels;
 
 fn main() {
