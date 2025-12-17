@@ -42,21 +42,21 @@ impl Render for AcpDebugger {
 fn main() {
     let app = Application::new();
 
-    app.run(|ctx| {
+    app.run(|cx| {
         // This must be called before using any GPUI Component features.
-        gpui_component::init(ctx);
+        gpui_component::init(cx);
 
-        ctx.spawn(async move |ctx| {
-            ctx.open_window(WindowOptions::default(), |window, ctx| {
-                let view = ctx.new(|_| AcpDebugger::new());
+        cx.spawn(async move |cx| {
+            cx.open_window(WindowOptions::default(), |window, cx| {
+                let view = cx.new(|_| AcpDebugger::new());
                 // This first level on the window, should be a Root.
-                ctx.new(|ctx| Root::new(view, window, ctx))
+                cx.new(|cx| Root::new(view, window, cx))
             })?;
 
             Ok::<_, anyhow::Error>(())
         })
         .detach();
 
-        ctx.activate(true);
+        cx.activate(true);
     });
 }
