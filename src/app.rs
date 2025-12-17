@@ -15,7 +15,7 @@
 use gpui::*;
 use gpui_component::{
     resizable::{h_resizable, resizable_panel},
-    Root,
+    IconName, Root, TitleBar,
 };
 
 use crate::panels::{AgentPanel, MessagePanel};
@@ -28,6 +28,17 @@ impl Render for AcpDebugger {
 
         div()
             .size_full()
+            .child(
+                TitleBar::new().child("ACP Debugger").child(
+                    div()
+                        .flex()
+                        .items_center()
+                        .gap_1()
+                        .mr(px(9.0))
+                        .child("Custom Agent")
+                        .child(IconName::ChevronDown),
+                ),
+            )
             .child(
                 h_resizable("layout")
                     .child(resizable_panel().size(px(400.)).child(AgentPanel))

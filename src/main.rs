@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use gpui::*;
-use gpui_component::Root;
+use gpui_component::{Root, TitleBar};
 use gpui_component_assets::Assets;
 
 mod app;
@@ -28,7 +28,12 @@ fn main() {
         gpui_component::init(cx);
 
         cx.spawn(async move |cx| {
-            cx.open_window(WindowOptions::default(), |window, cx| {
+            let window_options = WindowOptions {
+                // Setup GPUI to use custom title bar
+                titlebar: Some(TitleBar::title_bar_options()),
+                ..Default::default()
+            };
+            cx.open_window(window_options, |window, cx| {
                 let view = cx.new(|_| app::AcpDebugger);
                 // This first level on the window, should be a Root.
                 cx.new(|cx| Root::new(view, window, cx))

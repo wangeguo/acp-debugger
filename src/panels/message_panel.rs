@@ -27,7 +27,7 @@ impl MessagePanel {
                 window.open_sheet(cx, |sheet, _, _| {
                     sheet
                         .size_full()
-                        .margin_top(px(0.))
+                        .margin_top(px(34.)) // Space for window title bar
                         .size(px(400.))
                         .title("Message details")
                         .child(DetailPanel)
