@@ -18,15 +18,7 @@ use gpui::*;
 pub struct AgentPanel;
 
 impl RenderOnce for AgentPanel {
-    fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {
-        div()
-            .flex()
-            .bg(rgb(0x2e3440))
-            .size_full()
-            .justify_center()
-            .items_center()
-            .text_xl()
-            .text_color(rgb(0xeceff4))
-            .child("Agent Panel")
+    fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
+        div().flex().size_full().justify_center().items_center().text_xl().child("Agent Panel")
     }
 }

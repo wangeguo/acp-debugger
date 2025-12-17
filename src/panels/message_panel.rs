@@ -27,7 +27,6 @@ impl MessagePanel {
                 window.open_sheet(cx, |sheet, _, _| {
                     sheet
                         .size_full()
-                        .bg(rgb(0x2e3440))
                         .margin_top(px(0.))
                         .size(px(400.))
                         .title("Message details")
@@ -39,11 +38,10 @@ impl MessagePanel {
 }
 
 impl RenderOnce for MessagePanel {
-    fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {
+    fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
         v_flex()
             .id("scrollable-messages-container")
             .size_full()
-            .bg(rgb(0x2e3440))
             .overflow_y_scrollbar()
             .p_4()
             .child(Self::message("initialize", false))

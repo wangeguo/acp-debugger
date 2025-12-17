@@ -36,7 +36,7 @@ impl MessageItem {
 }
 
 impl RenderOnce for MessageItem {
-    fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {
+    fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
         div().flex().flex_col().bg(self.get_bg_color()).rounded_md().p_3().m_2().child(
             div().text_sm().font_semibold().text_color(rgb(0x2e3440)).child(self.title.clone()),
         )
