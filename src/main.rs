@@ -14,13 +14,14 @@
 
 use gpui::*;
 use gpui_component::Root;
+use gpui_component_assets::Assets;
 
 mod app;
 mod components;
 mod panels;
 
 fn main() {
-    let app = Application::new();
+    let app = Application::new().with_assets(Assets);
 
     app.run(|cx| {
         // This must be called before using any GPUI Component features.

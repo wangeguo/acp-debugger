@@ -9,6 +9,7 @@ dependencies = [
  "anyhow",
  "gpui",
  "gpui-component",
+ "gpui-component-assets",
 ]
 
 [[package]]
@@ -2234,6 +2235,17 @@ dependencies = [
  "unicode-segmentation",
  "uuid",
  "zed-sum-tree",
+]
+
+[[package]]
+name = "gpui-component-assets"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5842ea3f1e596fbc611894dcc0266df7125bc226f603ca313f5460b700503564"
+dependencies = [
+ "anyhow",
+ "gpui",
+ "rust-embed",
 ]
 
 [[package]]
@@ -4640,6 +4652,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "rust-embed-utils",
+ "shellexpand",
  "syn 2.0.111",
  "walkdir",
 ]
@@ -5125,6 +5138,15 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
+]
+
+[[package]]
+name = "shellexpand"
+version = "3.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b1fdf65dd6331831494dd616b30351c38e96e45921a27745cf98490458b90bb"
+dependencies = [
+ "dirs 5.0.1",
 ]
 
 [[package]]
