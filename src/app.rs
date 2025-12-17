@@ -29,7 +29,7 @@ impl Render for AcpDebugger {
         div()
             .size_full()
             .child(
-                TitleBar::new().child("ACP Debugger").child(
+                TitleBar::new().text_xs().child("ACP Debugger").child(
                     div()
                         .flex()
                         .items_center()
