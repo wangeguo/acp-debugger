@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use gpui::*;
-use gpui_component::{ActiveTheme as _, IconName};
+use gpui_component::{button::Button, ActiveTheme as _, IconName};
 
 #[derive(IntoElement)]
 pub struct AgentPanel;
@@ -36,7 +36,7 @@ impl AgentPanel {
                     .child(IconName::SquareTerminal)
                     .child("New Thread"),
             )
-            .child(IconName::Plus)
+            .child(Button::new("new-thread").rounded_lg().child(IconName::Plus))
     }
 }
 
