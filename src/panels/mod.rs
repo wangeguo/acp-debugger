@@ -13,8 +13,10 @@
 // limitations under the License.
 
 mod agent_panel;
+mod detail_panel;
 mod message_panel;
 
 // Re-exports
 pub use agent_panel::AgentPanel;
+pub use detail_panel::DetailPanel;
 pub use message_panel::MessagePanel;

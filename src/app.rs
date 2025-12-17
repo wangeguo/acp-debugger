@@ -13,16 +13,26 @@
 // limitations under the License.
 
 use gpui::*;
-use gpui_component::resizable::{h_resizable, resizable_panel};
+use gpui_component::{
+    resizable::{h_resizable, resizable_panel},
+    Root,
+};
 
 use crate::panels::{AgentPanel, MessagePanel};
 
 pub struct AcpDebugger;
 
 impl Render for AcpDebugger {
-    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
-        h_resizable("layout")
-            .child(resizable_panel().size(px(400.)).child(AgentPanel))
-            .child(resizable_panel().child(MessagePanel))
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let sheet_layer = Root::render_sheet_layer(window, cx);
+
+        div()
+            .size_full()
+            .child(
+                h_resizable("layout")
+                    .child(resizable_panel().size(px(400.)).child(AgentPanel))
+                    .child(resizable_panel().child(MessagePanel)),
+            )
+            .children(sheet_layer)
     }
 }

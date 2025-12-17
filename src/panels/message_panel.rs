@@ -13,12 +13,30 @@
 // limitations under the License.
 
 use gpui::*;
-use gpui_component::{scroll::ScrollableElement, v_flex};
+use gpui_component::{scroll::ScrollableElement, v_flex, WindowExt};
 
-use crate::components::MessageItem;
+use crate::{components::MessageItem, panels::DetailPanel};
 
 #[derive(IntoElement)]
 pub struct MessagePanel;
+
+impl MessagePanel {
+    fn message(title: impl Into<SharedString>, is_response: bool) -> impl IntoElement {
+        div()
+            .on_mouse_down(MouseButton::Left, move |_, window, cx| {
+                window.open_sheet(cx, |sheet, _, _| {
+                    sheet
+                        .size_full()
+                        .bg(rgb(0x2e3440))
+                        .margin_top(px(0.))
+                        .size(px(400.))
+                        .title("Message details")
+                        .child(DetailPanel)
+                })
+            })
+            .child(MessageItem::new(title, is_response))
+    }
+}
 
 impl RenderOnce for MessagePanel {
     fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {
@@ -28,25 +46,25 @@ impl RenderOnce for MessagePanel {
             .bg(rgb(0x2e3440))
             .overflow_y_scrollbar()
             .p_4()
-            .child(MessageItem::new("initialize", false))
-            .child(MessageItem::new("initialize response", true))
-            .child(MessageItem::new("authenticate", false))
-            .child(MessageItem::new("authenticate response", true))
-            .child(MessageItem::new("session/new", false))
-            .child(MessageItem::new("session/new response", true))
-            .child(MessageItem::new("tools/list", false))
-            .child(MessageItem::new("tools/list response", true))
-            .child(MessageItem::new("prompts/get", false))
-            .child(MessageItem::new("prompts/get response", true))
-            .child(MessageItem::new("resources/read", false))
-            .child(MessageItem::new("resources/read response", true))
-            .child(MessageItem::new("completion/complete", false))
-            .child(MessageItem::new("completion/complete response", true))
-            .child(MessageItem::new("logging/setLevel", false))
-            .child(MessageItem::new("logging/setLevel response", true))
-            .child(MessageItem::new("sampling/createMessage", false))
-            .child(MessageItem::new("sampling/createMessage response", true))
-            .child(MessageItem::new("roots/list", false))
-            .child(MessageItem::new("roots/list response", true))
+            .child(Self::message("initialize", false))
+            .child(Self::message("initialize response", true))
+            .child(Self::message("authenticate", false))
+            .child(Self::message("authenticate response", true))
+            .child(Self::message("session/new", false))
+            .child(Self::message("session/new response", true))
+            .child(Self::message("tools/list", false))
+            .child(Self::message("tools/list response", true))
+            .child(Self::message("prompts/get", false))
+            .child(Self::message("prompts/get response", true))
+            .child(Self::message("resources/read", false))
+            .child(Self::message("resources/read response", true))
+            .child(Self::message("completion/complete", false))
+            .child(Self::message("completion/complete response", true))
+            .child(Self::message("logging/setLevel", false))
+            .child(Self::message("logging/setLevel response", true))
+            .child(Self::message("sampling/createMessage", false))
+            .child(Self::message("sampling/createMessage response", true))
+            .child(Self::message("roots/list", false))
+            .child(Self::message("roots/list response", true))
     }
 }
