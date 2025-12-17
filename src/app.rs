@@ -15,7 +15,7 @@
 use gpui::*;
 use gpui_component::{
     resizable::{h_resizable, resizable_panel},
-    IconName, Root, TitleBar,
+    v_flex, IconName, Root, TitleBar,
 };
 
 use crate::panels::{AgentPanel, MessagePanel};
@@ -26,7 +26,7 @@ impl Render for AcpDebugger {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let sheet_layer = Root::render_sheet_layer(window, cx);
 
-        div()
+        v_flex()
             .size_full()
             .child(
                 TitleBar::new().text_xs().child("ACP Debugger").child(
@@ -40,9 +40,11 @@ impl Render for AcpDebugger {
                 ),
             )
             .child(
-                h_resizable("layout")
-                    .child(resizable_panel().size(px(400.)).child(AgentPanel))
-                    .child(resizable_panel().child(MessagePanel)),
+                div().flex_1().w_full().overflow_hidden().child(
+                    h_resizable("layout")
+                        .child(resizable_panel().size(px(400.)).child(AgentPanel))
+                        .child(resizable_panel().child(MessagePanel)),
+                ),
             )
             .children(sheet_layer)
     }

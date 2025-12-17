@@ -13,9 +13,7 @@
 // limitations under the License.
 
 use gpui::*;
-use gpui_component::{
-    button::Button, scroll::ScrollableElement, v_flex, ActiveTheme as _, IconName, WindowExt,
-};
+use gpui_component::{button::Button, v_flex, ActiveTheme as _, IconName, WindowExt};
 
 use crate::{components::MessageItem, panels::DetailPanel};
 
@@ -37,12 +35,12 @@ impl MessagePanel {
                     .flex()
                     .items_center()
                     .gap_4()
-                    .child(Button::new("record").rounded_lg().child("Record"))
-                    .child(Button::new("clean").rounded_lg().child("Clean"))
-                    .child(Button::new("preserve-log").rounded_lg().child("Preserve log"))
-                    .child(Button::new("copy").rounded_lg().child("Copy")),
+                    .child(Button::new("record").rounded_lg().outline().child("Record"))
+                    .child(Button::new("clean").rounded_lg().outline().child("Clean"))
+                    .child(Button::new("preserve-log").rounded_lg().outline().child("Preserve log"))
+                    .child(Button::new("copy").rounded_lg().outline().child("Copy")),
             )
-            .child(Button::new("new-message").rounded_lg().child(IconName::Plus))
+            .child(Button::new("new-message").rounded_lg().outline().child(IconName::Plus))
     }
 
     fn message(title: impl Into<SharedString>, is_response: bool) -> impl IntoElement {
@@ -63,11 +61,11 @@ impl MessagePanel {
 
 impl RenderOnce for MessagePanel {
     fn render(self, _: &mut Window, cx: &mut App) -> impl IntoElement {
-        div().size_full().child(self.header(cx)).child(
-            v_flex()
+        v_flex().size_full().overflow_hidden().child(self.header(cx)).child(
+            div()
                 .id("scrollable-messages-container")
-                .size_full()
-                .overflow_y_scrollbar()
+                .flex_1()
+                .overflow_y_scroll()
                 .p_4()
                 .child(Self::message("initialize", false))
                 .child(Self::message("initialize response", true))
