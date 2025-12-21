@@ -56,7 +56,7 @@ impl AgentPanel {
                     .child(IconName::SquareTerminal)
                     .child("New Thread"),
             )
-            .child(Button::new("new-thread").rounded_lg().outline().child(IconName::Plus))
+            .child(Button::new("new-thread").rounded_lg().outline().icon(IconName::Plus))
     }
 
     fn prompt_input(&self, cx: &Context<Self>) -> impl IntoElement {

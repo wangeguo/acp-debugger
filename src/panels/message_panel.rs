@@ -35,12 +35,32 @@ impl MessagePanel {
                     .flex()
                     .items_center()
                     .gap_4()
-                    .child(Button::new("record").rounded_lg().outline().child("Record"))
-                    .child(Button::new("clean").rounded_lg().outline().child("Clean"))
-                    .child(Button::new("preserve-log").rounded_lg().outline().child("Preserve log"))
-                    .child(Button::new("copy").rounded_lg().outline().child("Copy")),
+                    .child(
+                        Button::new("record")
+                            .compact()
+                            .rounded_lg()
+                            .outline()
+                            .icon(IconName::CircleCheck)
+                            .label("Record"),
+                    )
+                    .child(
+                        Button::new("clean")
+                            .compact()
+                            .rounded_lg()
+                            .outline()
+                            .icon(IconName::CircleX)
+                            .label("Clean"),
+                    )
+                    .child(
+                        Button::new("copy")
+                            .compact()
+                            .rounded_lg()
+                            .outline()
+                            .icon(IconName::Copy)
+                            .label("Copy"),
+                    ),
             )
-            .child(Button::new("new-message").rounded_lg().outline().child(IconName::Plus))
+            .child(Button::new("new-message").rounded_lg().outline().icon(IconName::Plus))
     }
 
     fn message(title: impl Into<SharedString>, is_response: bool) -> impl IntoElement {
