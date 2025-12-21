@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
+use gpui::{prelude::*, *};
 use gpui_component::{
     resizable::{h_resizable, resizable_panel},
     v_flex, IconName, Root, TitleBar,
@@ -20,7 +20,16 @@ use gpui_component::{
 
 use crate::panels::{AgentPanel, MessagePanel};
 
-pub struct AcpDebugger;
+pub struct AcpDebugger {
+    agent_panel: Entity<AgentPanel>,
+}
+
+impl AcpDebugger {
+    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+        let agent_panel = cx.new(|cx| AgentPanel::new(window, cx));
+        Self { agent_panel }
+    }
+}
 
 impl Render for AcpDebugger {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
@@ -42,7 +51,7 @@ impl Render for AcpDebugger {
             .child(
                 div().flex_1().w_full().overflow_hidden().child(
                     h_resizable("layout")
-                        .child(resizable_panel().size(px(400.)).child(AgentPanel))
+                        .child(resizable_panel().size(px(400.)).child(self.agent_panel.clone()))
                         .child(resizable_panel().child(MessagePanel)),
                 ),
             )

@@ -12,14 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
-use gpui_component::{button::Button, v_flex, ActiveTheme as _, IconName, Sizable as _};
+use gpui::{prelude::*, *};
+use gpui_component::{
+    button::Button,
+    h_flex,
+    input::{Input, InputState},
+    v_flex, ActiveTheme as _, IconName, Sizable as _,
+};
 
-#[derive(IntoElement)]
-pub struct AgentPanel;
+pub struct AgentPanel {
+    input: Entity<InputState>,
+}
 
 impl AgentPanel {
-    fn header(&self, cx: &App) -> impl IntoElement {
+    pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
+        let input = cx.new(|cx| {
+            InputState::new(window, cx)
+                .placeholder("Message the Custom Agent — @ to include context, / for commands")
+                .multi_line(true)
+                .auto_grow(3, 10)
+                .soft_wrap(true)
+        });
+
+        Self { input }
+    }
+}
+
+impl AgentPanel {
+    fn header(&self, cx: &Context<Self>) -> impl IntoElement {
         div()
             .flex()
             .items_center()
@@ -39,97 +59,84 @@ impl AgentPanel {
             .child(Button::new("new-thread").rounded_lg().outline().child(IconName::Plus))
     }
 
-    fn prompt_input(&self, cx: &App) -> impl IntoElement {
-        div()
-            .flex_shrink_0()
+    fn prompt_input(&self, cx: &Context<Self>) -> impl IntoElement {
+        v_flex()
+            .gap_2()
             .border_t_1()
             .border_color(cx.theme().border)
-            .bg(cx.theme().background)
             .p_3()
             .child(
+                // Input area - first row
                 div()
                     .flex()
-                    .flex_col()
-                    .gap_2()
+                    .bg(cx.theme().input)
+                    .rounded_md()
+                    .border_1()
+                    .border_color(cx.theme().border)
+                    .child(Input::new(&self.input).appearance(false)),
+            )
+            .child(
+                // Bottom row - left icons and right buttons
+                h_flex()
+                    .justify_between()
                     .child(
-                        // Input area - first row
-                        div()
-                            .px_3()
-                            .py_2()
-                            .bg(cx.theme().input)
-                            .rounded_md()
-                            .border_1()
-                            .border_color(cx.theme().border)
-                            .child(div().text_color(cx.theme().muted_foreground).child(
-                                "Message the Custom Agent — @ to include context, / for commands",
-                            )),
-                    )
-                    .child(
-                        // Bottom row - left icons and right buttons
+                        // Left side icons
                         div()
                             .flex()
-                            .flex_shrink_0()
                             .items_center()
-                            .justify_between()
+                            .gap_2()
                             .child(
-                                // Left side icons
-                                div()
-                                    .flex()
-                                    .items_center()
-                                    .gap_1()
-                                    .child(
-                                        Button::new("attach")
-                                            .small()
-                                            .rounded_md()
-                                            .child(IconName::Asterisk),
-                                    )
-                                    .child(
-                                        Button::new("context")
-                                            .small()
-                                            .rounded_md()
-                                            .child(IconName::CircleUser),
-                                    ),
+                                Button::new("attach")
+                                    .xsmall()
+                                    .rounded_md()
+                                    .child(IconName::Asterisk),
                             )
                             .child(
-                                // Right side dropdowns and send button
-                                div()
-                                    .flex()
-                                    .items_center()
-                                    .gap_2()
-                                    .child(
-                                        Button::new("model-selector").small().rounded_md().child(
-                                            div()
-                                                .flex()
-                                                .items_center()
-                                                .gap_1()
-                                                .child("Default")
-                                                .child(IconName::ChevronDown),
-                                        ),
-                                    )
-                                    .child(
-                                        Button::new("mode-selector").small().rounded_md().child(
-                                            div()
-                                                .flex()
-                                                .items_center()
-                                                .gap_1()
-                                                .child("Default (recommended)")
-                                                .child(IconName::ChevronDown),
-                                        ),
-                                    )
-                                    .child(
-                                        Button::new("send")
-                                            .small()
-                                            .rounded_md()
-                                            .child(IconName::ArrowRight),
-                                    ),
+                                Button::new("context")
+                                    .xsmall()
+                                    .rounded_md()
+                                    .child(IconName::CircleUser),
+                            ),
+                    )
+                    .child(
+                        // Right side dropdowns and send button
+                        div()
+                            .flex()
+                            .items_center()
+                            .gap_2()
+                            .child(
+                                Button::new("model-selector").xsmall().rounded_md().child(
+                                    div()
+                                        .flex()
+                                        .items_center()
+                                        .gap_1()
+                                        .child("Default")
+                                        .child(IconName::ChevronDown),
+                                ),
+                            )
+                            .child(
+                                Button::new("mode-selector").xsmall().rounded_md().child(
+                                    div()
+                                        .flex()
+                                        .items_center()
+                                        .gap_1()
+                                        .child("Default (recommended)")
+                                        .child(IconName::ChevronDown),
+                                ),
+                            )
+                            .child(
+                                Button::new("send")
+                                    .xsmall()
+                                    .rounded_md()
+                                    .child(IconName::ArrowRight),
                             ),
                     ),
             )
     }
 }
 
-impl RenderOnce for AgentPanel {
-    fn render(self, _: &mut Window, cx: &mut App) -> impl IntoElement {
+impl Render for AgentPanel {
+    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         v_flex()
             .size_full()
             .overflow_hidden()

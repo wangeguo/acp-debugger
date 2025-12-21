@@ -34,7 +34,7 @@ fn main() {
                 ..Default::default()
             };
             cx.open_window(window_options, |window, cx| {
-                let view = cx.new(|_| app::AcpDebugger);
+                let view = cx.new(|cx| app::AcpDebugger::new(window, cx));
                 // This first level on the window, should be a Root.
                 cx.new(|cx| Root::new(view, window, cx))
             })?;
