@@ -2,7 +2,7 @@
 
 # ACP Debugger
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/wangeguo/acp-debugger/ci.yml?branch=master)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/wangeguo/acp-debugger/ci.yml)](https://github.com/wangeguo/acp-debugger/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/wangeguo/acp-debugger)](https://github.com/wangeguo/acp-debugger/blob/master/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/wangeguo/acp-debugger)](https://github.com/wangeguo/acp-debugger/graphs/contributors)
 [![GitHub issues](https://img.shields.io/github/issues/wangeguo/acp-debugger)](https://github.com/wangeguo/acp-debugger/issues)
