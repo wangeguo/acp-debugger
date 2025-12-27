@@ -21,6 +21,43 @@ integrating, and debugging ACP-compatible agents.
   and syntax highlighting.
 - **Cross-Platform** – Available on Windows, macOS, and Linux.
 
+## Prerequisites
+
+This project uses [GPUI](https://github.com/zed-industries/zed/tree/main/crates/gpui)
+for the UI framework, which has platform-specific dependencies that are required
+for building from source or development.
+
+### macOS
+
+GPUI uses Metal for rendering. You need to:
+
+1. Install [Xcode](https://apps.apple.com/us/app/xcode/id497799835) from the App
+   Store (requires an Apple Developer account).
+2. Launch Xcode after installing and install the macOS components.
+3. Install Xcode command line tools: `xcode-select --install`
+4. Ensure the command line tools point to your Xcode installation:
+   ```bash
+   sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+   ```
+5. Download the Metal Toolchain:
+   ```bash
+   xcodebuild -downloadComponent MetalToolchain
+   ```
+
+### Linux
+
+You need to install the following dependencies (Ubuntu/Debian):
+
+```bash
+sudo apt install -y \
+  gcc g++ clang libfontconfig-dev libwayland-dev \
+  libwebkit2gtk-4.1-dev libxkbcommon-x11-dev libx11-xcb-dev \
+  libssl-dev libzstd-dev \
+  vulkan-validationlayers libvulkan1
+```
+
+For more details, see the [GPUI dependencies documentation](https://github.com/zed-industries/zed/tree/main/crates/gpui#dependencies).
+
 ## Installation
 
 Prebuilt binaries Windows, Linux and macOS can be downloaded from the
@@ -42,7 +79,7 @@ To get the latest bug fixes and features, you can install the development
 version from git. However, this is not fully tested. That means you're probably
 going to have more bugs despite having the latest bug fixes.
 
-```
+```bash
 cargo install --git https://github.com/wangeguo/acp-debugger
 ```
 
