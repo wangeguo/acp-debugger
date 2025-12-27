@@ -1,16 +1,36 @@
+<div align="center">
+
 # ACP Debugger
 
-A cross-platform desktop debugger for the [Agent Client Protocol
-(ACP)](https://agentclientprotocol.com), designed for developers building,
-integrating, and debugging ACP-compatible agents.
-
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/wangeguo/acp-debugger/ci.yml?branch=master)
 [![License](https://img.shields.io/github/license/wangeguo/acp-debugger)](https://github.com/wangeguo/acp-debugger/blob/master/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/wangeguo/acp-debugger)](https://github.com/wangeguo/acp-debugger/graphs/contributors)
 [![GitHub issues](https://img.shields.io/github/issues/wangeguo/acp-debugger)](https://github.com/wangeguo/acp-debugger/issues)
+[![GitHub downloads](https://img.shields.io/github/downloads/wangeguo/acp-debugger/total)](https://github.com/wangeguo/acp-debugger/releases/latest)
+
+[Introduction](#introduction) •
+[Features](#features) •
+[Prerequisites](#prerequisites) •
+[Installation](#installation) •
+[Development](#development) •
+[Contributing](#contributing)
+
+</div>
+
+## Introduction
+
+ACP Debugger is a cross-platform desktop application for debugging and testing
+[Agent Client Protocol (ACP)](https://agentclientprotocol.com) implementations.
+It provides a visual interface to inspect protocol messages, test agent
+connections, and monitor real-time communication between editors and agents.
+Built with Rust and [GPUI](https://github.com/zed-industries/zed/tree/main/crates/gpui),
+it offers native performance on Windows, macOS, and Linux.
+
+![ACP Debugger Screenshot](./resources/images/screenshot.png)
 
 ## Features
-- **Visual Debugging Interface** – Clean, dual-pane layout for real-time
-  inspection of ACP requests and responses.
+- **Visual Debugging Interface** – Inspect ACP requests and responses in real
+  time.
 - **Agent Management** – Manage external agent connections and configurations in
   a unified interface.
 - **Live Preview** – Preview model outputs, message formats, and mode
