@@ -45,11 +45,7 @@ impl AgentPanel {
                 .soft_wrap(true)
         });
 
-        Self {
-            input,
-            messages: Vec::new(),
-            scroll_handle: ScrollHandle::new(),
-        }
+        Self { input, messages: Vec::new(), scroll_handle: ScrollHandle::new() }
     }
 
     pub fn init(cx: &mut App) {
@@ -63,10 +59,8 @@ impl AgentPanel {
             return;
         }
 
-        self.messages.push(ChatMessageData {
-            content: content.to_string().into(),
-            role: Role::User,
-        });
+        self.messages
+            .push(ChatMessageData { content: content.to_string().into(), role: Role::User });
 
         self.input.update(cx, |state, cx| {
             state.set_value("", window, cx);

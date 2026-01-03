@@ -16,6 +16,7 @@ use gpui::*;
 use gpui_component::ActiveTheme as _;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub enum Role {
     User,
     Assistant,
@@ -30,10 +31,7 @@ pub struct ChatMessage {
 
 impl ChatMessage {
     pub fn new(content: impl Into<SharedString>, role: Role) -> Self {
-        Self {
-            content: content.into(),
-            role,
-        }
+        Self { content: content.into(), role }
     }
 }
 
