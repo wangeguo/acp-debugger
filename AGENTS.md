@@ -22,6 +22,10 @@
 - Description: imperative mood, lowercase start, no period
 - Body: optional, separated by blank line, provides additional context
 - Footer: optional, for metadata like `BREAKING CHANGE:` or issue references
+- Do NOT include AI-generated signatures like:
+  - `🤖 Generated with [Claude Code](https://claude.com/claude-code)`
+  - `Co-Authored-By: Claude ... <noreply@anthropic.com>`
+- Same rule applies to pull request descriptions
 
 ## Git workflow
 

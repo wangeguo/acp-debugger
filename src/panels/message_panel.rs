@@ -63,7 +63,11 @@ impl MessagePanel {
             .child(Button::new("new-message").rounded_lg().outline().icon(IconName::Plus))
     }
 
-    fn message(title: impl Into<SharedString>, is_response: bool) -> impl IntoElement {
+    fn message(
+        title: impl Into<SharedString>,
+        json_content: impl Into<SharedString>,
+        is_response: bool,
+    ) -> impl IntoElement {
         div()
             .on_mouse_down(MouseButton::Left, move |_, window, cx| {
                 window.open_sheet(cx, |sheet, _, _| {
@@ -75,7 +79,7 @@ impl MessagePanel {
                         .child(DetailPanel)
                 })
             })
-            .child(MessageItem::new(title, is_response))
+            .child(MessageItem::new(title, json_content, is_response))
     }
 }
 
@@ -86,27 +90,110 @@ impl RenderOnce for MessagePanel {
                 .id("scrollable-messages-container")
                 .flex_1()
                 .overflow_y_scroll()
-                .p_4()
-                .child(Self::message("initialize", false))
-                .child(Self::message("initialize response", true))
-                .child(Self::message("authenticate", false))
-                .child(Self::message("authenticate response", true))
-                .child(Self::message("session/new", false))
-                .child(Self::message("session/new response", true))
-                .child(Self::message("tools/list", false))
-                .child(Self::message("tools/list response", true))
-                .child(Self::message("prompts/get", false))
-                .child(Self::message("prompts/get response", true))
-                .child(Self::message("resources/read", false))
-                .child(Self::message("resources/read response", true))
-                .child(Self::message("completion/complete", false))
-                .child(Self::message("completion/complete response", true))
-                .child(Self::message("logging/setLevel", false))
-                .child(Self::message("logging/setLevel response", true))
-                .child(Self::message("sampling/createMessage", false))
-                .child(Self::message("sampling/createMessage response", true))
-                .child(Self::message("roots/list", false))
-                .child(Self::message("roots/list response", true)),
+                .px_3()
+                .py_2()
+                // initialize request
+                .child(Self::message(
+                    "initialize",
+                    r#"{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":1,"clientCapabilities":{"fs":{"readTextFile":true,"writeTextFile":true},"terminal":true},"clientInfo":{"name":"my-client","title":"My Client","version":"1.0.0"}}}"#,
+                    false,
+                ))
+                // initialize response
+                .child(Self::message(
+                    "initialize",
+                    r#"{"jsonrpc":"2.0","id":0,"result":{"protocolVersion":1,"agentCapabilities":{"loadSession":true,"promptCapabilities":{"image":true,"audio":true},"mcp":{"http":true,"sse":true}},"agentInfo":{"name":"my-agent","title":"My Agent","version":"1.0.0"},"authMethods":[]}}"#,
+                    true,
+                ))
+                // authenticate request
+                .child(Self::message(
+                    "authenticate",
+                    r#"{"jsonrpc":"2.0","id":1,"method":"authenticate","params":{"method":"api_key","credentials":{"key":"sk-..."}}}"#,
+                    false,
+                ))
+                // authenticate response
+                .child(Self::message(
+                    "authenticate",
+                    r#"{"jsonrpc":"2.0","id":1,"result":{"success":true}}"#,
+                    true,
+                ))
+                // session/new request
+                .child(Self::message(
+                    "session/new",
+                    r#"{"jsonrpc":"2.0","id":2,"method":"session/new","params":{"cwd":"/home/user/project","mcpServers":[{"name":"filesystem","command":"/path/to/mcp-server","args":["--stdio"],"env":[]}]}}"#,
+                    false,
+                ))
+                // session/new response
+                .child(Self::message(
+                    "session/new",
+                    r#"{"jsonrpc":"2.0","id":2,"result":{"sessionId":"sess_abc123def456"}}"#,
+                    true,
+                ))
+                // session/prompt request
+                .child(Self::message(
+                    "session/prompt",
+                    r#"{"jsonrpc":"2.0","id":3,"method":"session/prompt","params":{"sessionId":"sess_abc123def456","prompt":[{"type":"text","text":"Can you analyze this code?"}]}}"#,
+                    false,
+                ))
+                // session/update notification (agent_message_chunk)
+                .child(Self::message(
+                    "session/update",
+                    r#"{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"sess_abc123def456","update":{"sessionUpdate":"agent_message_chunk","delta":"I'll analyze the code..."}}}"#,
+                    true,
+                ))
+                // session/update notification (tool_call)
+                .child(Self::message(
+                    "session/update",
+                    r#"{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"sess_abc123def456","update":{"sessionUpdate":"tool_call","toolCallId":"call_001","title":"Reading file","kind":"read","status":"pending"}}}"#,
+                    true,
+                ))
+                // session/update notification (tool_call_update)
+                .child(Self::message(
+                    "session/update",
+                    r#"{"jsonrpc":"2.0","method":"session/update","params":{"sessionId":"sess_abc123def456","update":{"sessionUpdate":"tool_call_update","toolCallId":"call_001","status":"completed","content":[{"type":"text","text":"File content here..."}]}}}"#,
+                    true,
+                ))
+                // fs/read_text_file request (agent to client)
+                .child(Self::message(
+                    "fs/read_text_file",
+                    r#"{"jsonrpc":"2.0","id":4,"method":"fs/read_text_file","params":{"path":"/home/user/project/main.py"}}"#,
+                    false,
+                ))
+                // fs/read_text_file response
+                .child(Self::message(
+                    "fs/read_text_file",
+                    r#"{"jsonrpc":"2.0","id":4,"result":{"content":"def main():\n    print('Hello')\n"}}"#,
+                    true,
+                ))
+                // fs/write_text_file request
+                .child(Self::message(
+                    "fs/write_text_file",
+                    r#"{"jsonrpc":"2.0","id":5,"method":"fs/write_text_file","params":{"path":"/home/user/project/output.txt","content":"Result data"}}"#,
+                    false,
+                ))
+                // fs/write_text_file response
+                .child(Self::message(
+                    "fs/write_text_file",
+                    r#"{"jsonrpc":"2.0","id":5,"result":{"success":true}}"#,
+                    true,
+                ))
+                // terminal/create request
+                .child(Self::message(
+                    "terminal/create",
+                    r#"{"jsonrpc":"2.0","id":6,"method":"terminal/create","params":{"cwd":"/home/user/project"}}"#,
+                    false,
+                ))
+                // terminal/create response
+                .child(Self::message(
+                    "terminal/create",
+                    r#"{"jsonrpc":"2.0","id":6,"result":{"terminalId":"term_xyz789"}}"#,
+                    true,
+                ))
+                // session/cancel notification
+                .child(Self::message(
+                    "session/cancel",
+                    r#"{"jsonrpc":"2.0","method":"session/cancel","params":{"sessionId":"sess_abc123def456"}}"#,
+                    false,
+                )),
         )
     }
 }
