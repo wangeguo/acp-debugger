@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod chat_message;
 mod message_item;
 
 // Re-exports
+pub use chat_message::{ChatMessage, Role};
 pub use message_item::MessageItem;
