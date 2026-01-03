@@ -26,6 +26,7 @@ fn main() {
     app.run(|cx| {
         // This must be called before using any GPUI Component features.
         gpui_component::init(cx);
+        panels::AgentPanel::init(cx);
 
         cx.spawn(async move |cx| {
             let window_options = WindowOptions {

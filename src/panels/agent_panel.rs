@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::{prelude::*, *};
+use gpui::{actions, prelude::*, *};
 use gpui_component::{
     button::Button,
     h_flex,
@@ -20,8 +20,19 @@ use gpui_component::{
     v_flex, ActiveTheme as _, IconName, Sizable as _,
 };
 
+use crate::components::{ChatMessage, Role};
+
+actions!(agent_panel, [SendMessage]);
+
+struct ChatMessageData {
+    content: SharedString,
+    role: Role,
+}
+
 pub struct AgentPanel {
     input: Entity<InputState>,
+    messages: Vec<ChatMessageData>,
+    scroll_handle: ScrollHandle,
 }
 
 impl AgentPanel {
@@ -34,7 +45,32 @@ impl AgentPanel {
                 .soft_wrap(true)
         });
 
-        Self { input }
+        Self { input, messages: Vec::new(), scroll_handle: ScrollHandle::new() }
+    }
+
+    pub fn init(cx: &mut App) {
+        cx.bind_keys([KeyBinding::new("cmd-enter", SendMessage, None)]);
+    }
+
+    fn send_message(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        let content = self.input.read(cx).value();
+        let content = content.trim();
+        if content.is_empty() {
+            return;
+        }
+
+        self.messages
+            .push(ChatMessageData { content: content.to_string().into(), role: Role::User });
+
+        self.input.update(cx, |state, cx| {
+            state.set_value("", window, cx);
+        });
+
+        // Scroll to bottom after adding new message
+        let item_count = self.messages.len();
+        self.scroll_handle.scroll_to_item(item_count.saturating_sub(1));
+
+        cx.notify();
     }
 }
 
@@ -59,7 +95,7 @@ impl AgentPanel {
             .child(Button::new("new-thread").rounded_lg().outline().icon(IconName::Plus))
     }
 
-    fn prompt_input(&self, cx: &Context<Self>) -> impl IntoElement {
+    fn prompt_input(&self, cx: &mut Context<Self>) -> impl IntoElement {
         v_flex()
             .gap_2()
             .border_t_1()
@@ -128,7 +164,10 @@ impl AgentPanel {
                                 Button::new("send")
                                     .xsmall()
                                     .rounded_md()
-                                    .child(IconName::ArrowRight),
+                                    .child(IconName::ArrowRight)
+                                    .on_click(cx.listener(|this, _, window, cx| {
+                                        this.send_message(window, cx);
+                                    })),
                             ),
                     ),
             )
@@ -140,17 +179,22 @@ impl Render for AgentPanel {
         v_flex()
             .size_full()
             .overflow_hidden()
+            .on_action(cx.listener(|this, _: &SendMessage, window, cx| {
+                this.send_message(window, cx);
+            }))
             .child(self.header(cx))
             .child(
-                v_flex().id("scrollable-agent-container").flex_1().overflow_y_scroll().p_4().child(
-                    div()
-                        .size_full()
-                        .flex()
-                        .justify_center()
-                        .items_center()
-                        .text_xl()
-                        .child("Agent Panel"),
-                ),
+                v_flex()
+                    .id("scrollable-agent-container")
+                    .flex_1()
+                    .overflow_y_scroll()
+                    .p_4()
+                    .children(
+                        self.messages
+                            .iter()
+                            .map(|msg| ChatMessage::new(msg.content.clone(), msg.role)),
+                    )
+                    .track_scroll(&self.scroll_handle),
             )
             .child(self.prompt_input(cx))
     }
