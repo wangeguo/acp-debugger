@@ -20,13 +20,15 @@ use gpui_component::{
     v_flex, ActiveTheme as _, IconName, Sizable as _,
 };
 
-use crate::components::{ChatMessage, Role};
+use crate::components::{
+    ChatMessage, ChatMessageVariant, PlanEntry, PlanEntryStatus, Role, ToolCallKind,
+    ToolCallStatus,
+};
 
 actions!(agent_panel, [SendMessage]);
 
 struct ChatMessageData {
-    content: SharedString,
-    role: Role,
+    variant: ChatMessageVariant,
 }
 
 pub struct AgentPanel {
@@ -45,7 +47,109 @@ impl AgentPanel {
                 .soft_wrap(true)
         });
 
-        Self { input, messages: Vec::new(), scroll_handle: ScrollHandle::new() }
+        // Pre-load demo data to showcase all message variants
+        let messages = vec![
+            // User text message
+            ChatMessageData {
+                variant: ChatMessageVariant::Text {
+                    role: Role::User,
+                    content: "Can you analyze this code and fix the failing tests?".into(),
+                },
+            },
+            // Agent thinking
+            ChatMessageData {
+                variant: ChatMessageVariant::Thought {
+                    content: "I'll start by reading the project structure to understand the codebase layout. Then I'll look at the test files to identify which tests are failing and why.".into(),
+                },
+            },
+            // Tool call - read (completed, with content)
+            ChatMessageData {
+                variant: ChatMessageVariant::ToolCall {
+                    title: "Read src/main.rs".into(),
+                    kind: ToolCallKind::Read,
+                    status: ToolCallStatus::Completed,
+                    content: Some("fn main() {\n    println!(\"Hello, world!\");\n}".into()),
+                },
+            },
+            // Tool call - search (completed)
+            ChatMessageData {
+                variant: ChatMessageVariant::ToolCall {
+                    title: "Search for test files".into(),
+                    kind: ToolCallKind::Search,
+                    status: ToolCallStatus::Completed,
+                    content: None,
+                },
+            },
+            // Tool call - edit (in_progress)
+            ChatMessageData {
+                variant: ChatMessageVariant::ToolCall {
+                    title: "Edit src/lib.rs".into(),
+                    kind: ToolCallKind::Edit,
+                    status: ToolCallStatus::InProgress,
+                    content: None,
+                },
+            },
+            // Tool call - execute (pending)
+            ChatMessageData {
+                variant: ChatMessageVariant::ToolCall {
+                    title: "Run cargo test".into(),
+                    kind: ToolCallKind::Execute,
+                    status: ToolCallStatus::Pending,
+                    content: None,
+                },
+            },
+            // Tool call - failed
+            ChatMessageData {
+                variant: ChatMessageVariant::ToolCall {
+                    title: "Write /etc/config".into(),
+                    kind: ToolCallKind::Edit,
+                    status: ToolCallStatus::Failed,
+                    content: None,
+                },
+            },
+            // Agent text reply
+            ChatMessageData {
+                variant: ChatMessageVariant::Text {
+                    role: Role::Assistant,
+                    content: "I've analyzed the code and found the issue. The test was expecting a return value of `42` but the function returns `0`. I've fixed this in `src/lib.rs`.".into(),
+                },
+            },
+            // Execution plan
+            ChatMessageData {
+                variant: ChatMessageVariant::Plan {
+                    entries: vec![
+                        PlanEntry {
+                            content: "Read project structure".into(),
+                            status: PlanEntryStatus::Completed,
+                        },
+                        PlanEntry {
+                            content: "Analyze failing tests".into(),
+                            status: PlanEntryStatus::Completed,
+                        },
+                        PlanEntry {
+                            content: "Fix implementation in lib.rs".into(),
+                            status: PlanEntryStatus::InProgress,
+                        },
+                        PlanEntry {
+                            content: "Run tests to verify".into(),
+                            status: PlanEntryStatus::Pending,
+                        },
+                        PlanEntry {
+                            content: "Update documentation".into(),
+                            status: PlanEntryStatus::Pending,
+                        },
+                    ],
+                },
+            },
+            // System notification
+            ChatMessageData {
+                variant: ChatMessageVariant::System {
+                    content: "Mode changed to \"Accept Edits\"".into(),
+                },
+            },
+        ];
+
+        Self { input, messages, scroll_handle: ScrollHandle::new() }
     }
 
     pub fn init(cx: &mut App) {
@@ -59,8 +163,12 @@ impl AgentPanel {
             return;
         }
 
-        self.messages
-            .push(ChatMessageData { content: content.to_string().into(), role: Role::User });
+        self.messages.push(ChatMessageData {
+            variant: ChatMessageVariant::Text {
+                role: Role::User,
+                content: content.to_string().into(),
+            },
+        });
 
         self.input.update(cx, |state, cx| {
             state.set_value("", window, cx);
@@ -189,11 +297,28 @@ impl Render for AgentPanel {
                     .flex_1()
                     .overflow_y_scroll()
                     .p_4()
-                    .children(
-                        self.messages
-                            .iter()
-                            .map(|msg| ChatMessage::new(msg.content.clone(), msg.role)),
-                    )
+                    .children(self.messages.iter().map(|msg| {
+                        let variant = msg.variant.clone();
+                        match variant {
+                            ChatMessageVariant::Text { role, content } => {
+                                ChatMessage::text(role, content)
+                            }
+                            ChatMessageVariant::Thought { content } => {
+                                ChatMessage::thought(content)
+                            }
+                            ChatMessageVariant::ToolCall { title, kind, status, content } => {
+                                if let Some(c) = content {
+                                    ChatMessage::tool_call_with_content(title, kind, status, c)
+                                } else {
+                                    ChatMessage::tool_call(title, kind, status)
+                                }
+                            }
+                            ChatMessageVariant::Plan { entries } => ChatMessage::plan(entries),
+                            ChatMessageVariant::System { content } => {
+                                ChatMessage::system(content)
+                            }
+                        }
+                    }))
                     .track_scroll(&self.scroll_handle),
             )
             .child(self.prompt_input(cx))
