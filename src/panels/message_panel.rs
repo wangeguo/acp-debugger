@@ -15,7 +15,7 @@
 use gpui::*;
 use gpui_component::{button::Button, v_flex, ActiveTheme as _, IconName, WindowExt};
 
-use crate::{components::MessageItem, panels::DetailPanel};
+use crate::{components::MessageItem, models::AcpMessage, panels::DetailPanel};
 
 #[derive(IntoElement)]
 pub struct MessagePanel;
@@ -68,15 +68,21 @@ impl MessagePanel {
         json_content: impl Into<SharedString>,
         is_response: bool,
     ) -> impl IntoElement {
+        let title: SharedString = title.into();
+        let json_content: SharedString = json_content.into();
+        let acp_message = AcpMessage::parse(title.clone(), json_content.clone(), is_response);
+
         div()
             .on_mouse_down(MouseButton::Left, move |_, window, cx| {
-                window.open_sheet(cx, |sheet, _, _| {
+                let msg = acp_message.clone();
+                let msg_title = msg.title.clone();
+                window.open_sheet(cx, move |sheet, _, _| {
                     sheet
                         .size_full()
                         .margin_top(px(84.)) // Space for window title bar
                         .size(px(400.))
-                        .title("Message details")
-                        .child(DetailPanel)
+                        .title(format!("{} - Message Details", msg_title))
+                        .child(DetailPanel::new(msg.clone()))
                 })
             })
             .child(MessageItem::new(title, json_content, is_response))
