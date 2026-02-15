@@ -21,8 +21,7 @@ use gpui_component::{
 };
 
 use crate::components::{
-    ChatMessage, ChatMessageVariant, PlanEntry, PlanEntryStatus, Role, ToolCallKind,
-    ToolCallStatus,
+    ChatMessage, ChatMessageVariant, PlanEntry, PlanEntryStatus, Role, ToolCallKind, ToolCallStatus,
 };
 
 actions!(agent_panel, [SendMessage]);
@@ -314,9 +313,7 @@ impl Render for AgentPanel {
                                 }
                             }
                             ChatMessageVariant::Plan { entries } => ChatMessage::plan(entries),
-                            ChatMessageVariant::System { content } => {
-                                ChatMessage::system(content)
-                            }
+                            ChatMessageVariant::System { content } => ChatMessage::system(content),
                         }
                     }))
                     .track_scroll(&self.scroll_handle),

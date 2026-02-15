@@ -69,14 +69,9 @@ pub struct PlanEntry {
 #[derive(Clone)]
 pub enum ChatMessageVariant {
     /// User or Agent text message
-    Text {
-        role: Role,
-        content: SharedString,
-    },
+    Text { role: Role, content: SharedString },
     /// Agent thinking process (collapsible)
-    Thought {
-        content: SharedString,
-    },
+    Thought { content: SharedString },
     /// Tool invocation with kind, status, and optional result
     ToolCall {
         title: SharedString,
@@ -85,13 +80,9 @@ pub enum ChatMessageVariant {
         content: Option<SharedString>,
     },
     /// Execution plan with progress entries
-    Plan {
-        entries: Vec<PlanEntry>,
-    },
+    Plan { entries: Vec<PlanEntry> },
     /// System notification (mode change, config update, etc.)
-    System {
-        content: SharedString,
-    },
+    System { content: SharedString },
 }
 
 // ── ChatMessage Component ────────────────────────────────────────────
@@ -103,15 +94,11 @@ pub struct ChatMessage {
 
 impl ChatMessage {
     pub fn text(role: Role, content: impl Into<SharedString>) -> Self {
-        Self {
-            variant: ChatMessageVariant::Text { role, content: content.into() },
-        }
+        Self { variant: ChatMessageVariant::Text { role, content: content.into() } }
     }
 
     pub fn thought(content: impl Into<SharedString>) -> Self {
-        Self {
-            variant: ChatMessageVariant::Thought { content: content.into() },
-        }
+        Self { variant: ChatMessageVariant::Thought { content: content.into() } }
     }
 
     pub fn tool_call(
@@ -150,9 +137,7 @@ impl ChatMessage {
     }
 
     pub fn system(content: impl Into<SharedString>) -> Self {
-        Self {
-            variant: ChatMessageVariant::System { content: content.into() },
-        }
+        Self { variant: ChatMessageVariant::System { content: content.into() } }
     }
 }
 
@@ -218,18 +203,10 @@ fn plan_entry_color(status: &PlanEntryStatus) -> Hsla {
 
 fn render_text(role: Role, content: SharedString, cx: &App) -> Div {
     let (icon, label, accent, bg_color) = match role {
-        Role::User => (
-            IconName::CircleUser,
-            "You",
-            rgb(NORD_GREEN),
-            cx.theme().colors.secondary,
-        ),
-        Role::Assistant => (
-            IconName::SquareTerminal,
-            "Agent",
-            rgb(NORD_BLUE),
-            cx.theme().colors.accent,
-        ),
+        Role::User => (IconName::CircleUser, "You", rgb(NORD_GREEN), cx.theme().colors.secondary),
+        Role::Assistant => {
+            (IconName::SquareTerminal, "Agent", rgb(NORD_BLUE), cx.theme().colors.accent)
+        }
     };
     let accent_color: Hsla = accent.into();
 
@@ -286,18 +263,9 @@ fn render_thought(content: SharedString, cx: &App) -> Div {
                 .child(div().text_xs().font_semibold().text_color(accent).child("Thinking")),
         )
         // Collapsible content
-        .child(
-            Collapsible::new()
-                .open(false)
-                .content(
-                    div()
-                        .px_2()
-                        .py_1()
-                        .text_xs()
-                        .text_color(cx.theme().foreground)
-                        .child(content),
-                ),
-        )
+        .child(Collapsible::new().open(false).content(
+            div().px_2().py_1().text_xs().text_color(cx.theme().foreground).child(content),
+        ))
 }
 
 fn render_tool_call(
@@ -343,13 +311,7 @@ fn render_tool_call(
                     h_flex()
                         .items_center()
                         .gap_1()
-                        .child(
-                            div()
-                                .w(px(6.))
-                                .h(px(6.))
-                                .rounded(px(3.))
-                                .bg(s_color),
-                        )
+                        .child(div().w(px(6.)).h(px(6.)).rounded(px(3.)).bg(s_color))
                         .child(div().text_xs().text_color(s_color).child(s_label)),
                 ),
         );
@@ -461,14 +423,7 @@ fn render_system(content: SharedString, cx: &App) -> Div {
                 .child(div().text_xs().font_semibold().text_color(accent).child("System")),
         )
         // Content
-        .child(
-            div()
-                .px_2()
-                .py_1()
-                .text_xs()
-                .text_color(cx.theme().foreground)
-                .child(content),
-        )
+        .child(div().px_2().py_1().text_xs().text_color(cx.theme().foreground).child(content))
 }
 
 // ── RenderOnce Implementation ────────────────────────────────────────
@@ -485,12 +440,8 @@ impl RenderOnce for ChatMessage {
             ChatMessageVariant::ToolCall { title, kind, status, content } => {
                 render_tool_call(title, kind, status, content, cx).into_any_element()
             }
-            ChatMessageVariant::Plan { entries } => {
-                render_plan(entries, cx).into_any_element()
-            }
-            ChatMessageVariant::System { content } => {
-                render_system(content, cx).into_any_element()
-            }
+            ChatMessageVariant::Plan { entries } => render_plan(entries, cx).into_any_element(),
+            ChatMessageVariant::System { content } => render_system(content, cx).into_any_element(),
         }
     }
 }
