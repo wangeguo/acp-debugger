@@ -10,6 +10,7 @@ dependencies = [
  "gpui",
  "gpui-component",
  "gpui-component-assets",
+ "serde_json",
 ]
 
 [[package]]
