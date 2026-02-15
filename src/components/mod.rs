@@ -16,5 +16,7 @@ mod chat_message;
 mod message_item;
 
 // Re-exports
-pub use chat_message::{ChatMessage, Role};
+pub use chat_message::{
+    ChatMessage, ChatMessageVariant, PlanEntry, PlanEntryStatus, Role, ToolCallKind, ToolCallStatus,
+};
 pub use message_item::MessageItem;
