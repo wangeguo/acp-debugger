@@ -14,40 +14,50 @@
 
 use gpui::{prelude::*, *};
 use gpui_component::{
+    button::Button,
     resizable::{h_resizable, resizable_panel},
-    v_flex, IconName, Root, TitleBar,
+    v_flex, IconName, Root, Sizable as _, TitleBar, WindowExt as _,
 };
 
-use crate::panels::{AgentPanel, MessagePanel};
+use crate::{
+    components::AgentForm,
+    models::AgentRegistry,
+    panels::{AgentPanel, MessagePanel},
+};
 
 pub struct AcpDebugger {
     agent_panel: Entity<AgentPanel>,
+    agent_registry: Entity<AgentRegistry>,
 }
 
 impl AcpDebugger {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let agent_panel = cx.new(|cx| AgentPanel::new(window, cx));
-        Self { agent_panel }
+        let agent_registry = cx.new(|_| AgentRegistry::new());
+        Self { agent_panel, agent_registry }
     }
 }
 
 impl Render for AcpDebugger {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let sheet_layer = Root::render_sheet_layer(window, cx);
+        let registry = self.agent_registry.clone();
 
         v_flex()
             .size_full()
-            .child(
-                TitleBar::new().text_xs().child("ACP Debugger").child(
-                    div()
-                        .flex()
-                        .items_center()
-                        .gap_1()
-                        .mr(px(9.0))
-                        .child("Custom Agent")
-                        .child(IconName::ChevronDown),
+            .child(TitleBar::new().text_xs().child("ACP Debugger").child(
+                div().flex().items_center().gap_1().mr(px(9.0)).child("Custom Agent").child(
+                    Button::new("add-agent").xsmall().rounded_lg().icon(IconName::Plus).on_click(
+                        move |_, window, cx| {
+                            let reg = registry.clone();
+                            let form = cx.new(|cx| AgentForm::new(reg, window, cx));
+                            window.open_sheet(cx, move |sheet, _, _| {
+                                sheet.size(px(450.)).title("New Agent").child(form.clone())
+                            });
+                        },
+                    ),
                 ),
-            )
+            ))
             .child(
                 div().flex_1().w_full().overflow_hidden().child(
                     h_resizable("layout")
