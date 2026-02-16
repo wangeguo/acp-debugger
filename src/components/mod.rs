@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+mod agent_form;
 mod chat_message;
 mod message_item;
 
 // Re-exports
+pub use agent_form::AgentForm;
 pub use chat_message::{
     ChatMessage, ChatMessageVariant, PlanEntry, PlanEntryStatus, Role, ToolCallKind, ToolCallStatus,
 };
