@@ -7,6 +7,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 anyhow = "1.0.101"
+futures = "0.3"
+log = "0.4"
 gpui = "0.2.2"
 gpui-component = "0.5.1"
 gpui-component-assets = "0.5.1"
