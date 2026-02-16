@@ -10,7 +10,9 @@ dependencies = [
  "gpui",
  "gpui-component",
  "gpui-component-assets",
+ "serde",
  "serde_json",
+ "thiserror 2.0.17",
 ]
 
 [[package]]

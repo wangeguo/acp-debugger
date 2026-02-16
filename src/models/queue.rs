@@ -12,15 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod acp_message;
-mod agent;
-mod queue;
-mod settings;
+#![allow(dead_code)]
 
-pub use acp_message::{AcpMessage, MessageType};
-#[allow(unused_imports)]
-pub use agent::*;
-#[allow(unused_imports)]
-pub use queue::*;
-#[allow(unused_imports)]
-pub use settings::*;
+use super::agent::AgentId;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum QueueItemStatus {
+    Pending,
+    InFlight,
+    Success,
+    Failed,
+}
+
+#[derive(Debug, Clone)]
+pub struct QueueItem {
+    pub id: u64,
+    pub agent_id: AgentId,
+    pub method: String,
+    pub request_json: String,
+    pub response_json: Option<String>,
+    pub status: QueueItemStatus,
+    pub created_at: std::time::Instant,
+    pub completed_at: Option<std::time::Instant>,
+    pub error_message: Option<String>,
+}
