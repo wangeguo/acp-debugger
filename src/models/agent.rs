@@ -50,10 +50,7 @@ pub struct AgentRegistry {
 
 impl AgentRegistry {
     pub fn new() -> Self {
-        Self {
-            agents: Vec::new(),
-            active_agent_id: None,
-        }
+        Self { agents: Vec::new(), active_agent_id: None }
     }
 
     pub fn agents(&self) -> &[AgentConfig] {
@@ -65,9 +62,7 @@ impl AgentRegistry {
     }
 
     pub fn active_agent(&self) -> Option<&AgentConfig> {
-        self.active_agent_id
-            .as_ref()
-            .and_then(|id| self.agents.iter().find(|a| &a.id == id))
+        self.active_agent_id.as_ref().and_then(|id| self.agents.iter().find(|a| &a.id == id))
     }
 
     pub fn add_agent(&mut self, config: AgentConfig) {
