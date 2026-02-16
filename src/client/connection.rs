@@ -261,6 +261,11 @@ impl AcpConnection {
                 if is_response {
                     if let Some(id) = value.get("id").and_then(|v| v.as_u64()) {
                         self.handle_response(id, &value);
+                    } else {
+                        log::warn!(
+                            "Received JSON-RPC response with missing or non-u64 id: {}",
+                            raw
+                        );
                     }
                 }
 
