@@ -14,12 +14,15 @@
 
 mod acp_message;
 mod agent;
+pub mod file_settings_store;
 mod queue;
 mod settings;
 
 pub use acp_message::{AcpMessage, MessageType};
 #[allow(unused_imports)]
 pub use agent::*;
+#[allow(unused_imports)]
+pub use file_settings_store::FileSettingsStore;
 #[allow(unused_imports)]
 pub use queue::*;
 #[allow(unused_imports)]
