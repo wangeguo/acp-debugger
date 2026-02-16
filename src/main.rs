@@ -17,6 +17,8 @@ use gpui_component::{Root, TitleBar};
 use gpui_component_assets::Assets;
 
 mod app;
+#[allow(dead_code)]
+mod client;
 mod components;
 mod models;
 mod panels;
