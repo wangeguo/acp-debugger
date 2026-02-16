@@ -15,8 +15,11 @@
 mod agent_panel;
 mod detail_panel;
 mod message_panel;
+mod settings_panel;
 
 // Re-exports
 pub use agent_panel::AgentPanel;
 pub use detail_panel::DetailPanel;
 pub use message_panel::MessagePanel;
+#[allow(unused_imports)]
+pub use settings_panel::SettingsPanel;
