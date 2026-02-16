@@ -18,6 +18,9 @@ mod queue;
 mod settings;
 
 pub use acp_message::{AcpMessage, MessageType};
+#[allow(unused_imports)]
 pub use agent::*;
+#[allow(unused_imports)]
 pub use queue::*;
+#[allow(unused_imports)]
 pub use settings::*;
