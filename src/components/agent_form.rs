@@ -130,10 +130,11 @@ impl AgentForm {
 
         let id = generate_agent_id();
 
-        let config = AgentConfig { id, name, endpoint, args, env, auth, timeout_ms };
+        let config = AgentConfig { id: id.clone(), name, endpoint, args, env, auth, timeout_ms };
 
         self.registry.update(cx, |reg, _| {
             reg.add_agent(config);
+            reg.set_active(Some(id));
         });
 
         self.error_message = None;
