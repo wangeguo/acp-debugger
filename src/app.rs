@@ -14,50 +14,41 @@
 
 use gpui::{prelude::*, *};
 use gpui_component::{
-    button::Button,
     resizable::{h_resizable, resizable_panel},
-    v_flex, IconName, Root, Sizable as _, TitleBar, WindowExt as _,
+    v_flex, Root, TitleBar,
 };
 
 use crate::{
-    components::AgentForm,
+    components::AgentSwitcher,
     models::AgentRegistry,
     panels::{AgentPanel, MessagePanel},
 };
 
 pub struct AcpDebugger {
     agent_panel: Entity<AgentPanel>,
-    agent_registry: Entity<AgentRegistry>,
+    agent_switcher: Entity<AgentSwitcher>,
 }
 
 impl AcpDebugger {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let agent_panel = cx.new(|cx| AgentPanel::new(window, cx));
         let agent_registry = cx.new(|_| AgentRegistry::new());
-        Self { agent_panel, agent_registry }
+        let agent_panel = cx.new(|cx| AgentPanel::new(window, cx));
+        let agent_switcher = cx.new(|cx| AgentSwitcher::new(agent_registry, cx));
+        Self { agent_panel, agent_switcher }
     }
 }
 
 impl Render for AcpDebugger {
     fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let sheet_layer = Root::render_sheet_layer(window, cx);
-        let registry = self.agent_registry.clone();
 
         v_flex()
             .size_full()
-            .child(TitleBar::new().text_xs().child("ACP Debugger").child(
-                div().flex().items_center().gap_1().mr(px(9.0)).child("Custom Agent").child(
-                    Button::new("add-agent").xsmall().rounded_lg().icon(IconName::Plus).on_click(
-                        move |_, window, cx| {
-                            let reg = registry.clone();
-                            let form = cx.new(|cx| AgentForm::new(reg, window, cx));
-                            window.open_sheet(cx, move |sheet, _, _| {
-                                sheet.size(px(450.)).title("New Agent").child(form.clone())
-                            });
-                        },
-                    ),
+            .child(
+                TitleBar::new().text_xs().child("ACP Debugger").child(
+                    div().flex().items_center().mr(px(9.0)).child(self.agent_switcher.clone()),
                 ),
-            ))
+            )
             .child(
                 div().flex_1().w_full().overflow_hidden().child(
                     h_resizable("layout")

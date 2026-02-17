@@ -13,11 +13,13 @@
 // limitations under the License.
 
 mod agent_form;
+mod agent_switcher;
 mod chat_message;
 mod message_item;
 
 // Re-exports
 pub use agent_form::AgentForm;
+pub use agent_switcher::AgentSwitcher;
 pub use chat_message::{
     ChatMessage, ChatMessageVariant, PlanEntry, PlanEntryStatus, Role, ToolCallKind, ToolCallStatus,
 };
