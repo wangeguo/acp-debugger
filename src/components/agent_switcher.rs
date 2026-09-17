@@ -12,11 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::{prelude::*, *};
-use gpui_component::{
-    button::Button,
-    menu::{DropdownMenu as _, PopupMenuItem},
-    IconName, Sizable as _, WindowExt as _,
+use gpui_kit::{
+    component::{
+        button::Button,
+        menu::{DropdownMenu as _, PopupMenuItem},
+        IconName, Sizable as _, WindowExt as _,
+    },
+    prelude::*,
+    *,
 };
 
 use crate::{components::AgentForm, models::AgentRegistry};

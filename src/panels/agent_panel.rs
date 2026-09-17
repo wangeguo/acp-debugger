@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::{actions, prelude::*, *};
-use gpui_component::{
-    button::Button,
-    h_flex,
-    input::{Input, InputState},
-    v_flex, ActiveTheme as _, IconName, Sizable as _,
+use gpui_kit::{
+    actions,
+    component::{
+        button::Button,
+        h_flex,
+        input::{Textarea, TextareaState},
+        v_flex, ActiveTheme as _, IconName, Sizable as _,
+    },
+    prelude::*,
+    *,
 };
 
 use crate::components::{
@@ -31,7 +35,7 @@ struct ChatMessageData {
 }
 
 pub struct AgentPanel {
-    input: Entity<InputState>,
+    input: Entity<TextareaState>,
     messages: Vec<ChatMessageData>,
     scroll_handle: ScrollHandle,
 }
@@ -39,9 +43,8 @@ pub struct AgentPanel {
 impl AgentPanel {
     pub fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let input = cx.new(|cx| {
-            InputState::new(window, cx)
+            TextareaState::new(window, cx)
                 .placeholder("Message the Custom Agent — @ to include context, / for commands")
-                .multi_line(true)
                 .auto_grow(3, 10)
                 .soft_wrap(true)
         });
@@ -216,7 +219,7 @@ impl AgentPanel {
                     .rounded_md()
                     .border_1()
                     .border_color(cx.theme().border)
-                    .child(Input::new(&self.input).appearance(false)),
+                    .child(Textarea::new(&self.input).appearance(false)),
             )
             .child(
                 // Bottom row - left icons and right buttons
