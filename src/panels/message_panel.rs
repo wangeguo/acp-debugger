@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
-use gpui_component::{button::Button, v_flex, ActiveTheme as _, IconName, WindowExt};
+use gpui_kit::{
+    component::{button::Button, v_flex, ActiveTheme as _, IconName, WindowExt},
+    *,
+};
 
 use crate::{components::MessageItem, models::AcpMessage, panels::DetailPanel};
 
@@ -79,7 +81,7 @@ impl MessagePanel {
                 window.open_sheet(cx, move |sheet, _, _| {
                     sheet
                         .size_full()
-                        .margin_top(px(84.)) // Space for window title bar
+                        .mt(px(84.)) // Space for window title bar
                         .size(px(400.))
                         .title(format!("{} - Message Details", msg_title))
                         .child(DetailPanel::new(msg.clone()))

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::SharedString;
+use gpui_kit::SharedString;
 use serde_json::Value;
 
 /// The type of an ACP message, determined by JSON-RPC 2.0 fields.

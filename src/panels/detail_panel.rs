@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
-use gpui_component::{
-    accordion::Accordion, description_list::DescriptionList, h_flex, tag::Tag, text::TextView,
-    v_flex, ActiveTheme as _, Sizable as _, StyledExt as _,
+use gpui_kit::{
+    component::{
+        accordion::Accordion, description_list::DescriptionList, h_flex, tag::Tag, text::TextView,
+        v_flex, ActiveTheme as _, Sizable as _, StyledExt as _,
+    },
+    *,
 };
 
 use crate::models::{AcpMessage, MessageType};
@@ -50,7 +52,7 @@ impl DetailPanel {
 }
 
 impl RenderOnce for DetailPanel {
-    fn render(self, window: &mut Window, cx: &mut App) -> impl IntoElement {
+    fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let msg = &self.message;
 
         // Build overview description list
@@ -78,7 +80,7 @@ impl RenderOnce for DetailPanel {
         let payload_section = msg.payload_json().map(|payload| {
             let section_title: &str = if msg.params.is_some() { "Params" } else { "Result" };
             let md = format!("```json\n{}\n```", payload);
-            let text_view = TextView::markdown("payload-json", md, window, cx);
+            let text_view = TextView::markdown("payload-json", md);
             (section_title, text_view)
         });
 
@@ -90,13 +92,13 @@ impl RenderOnce for DetailPanel {
                     md.push_str(&format!("\n```json\n{}\n```", pretty));
                 }
             }
-            TextView::markdown("error-details", md, window, cx)
+            TextView::markdown("error-details", md)
         });
 
         // Build raw payload TextView
         let raw_json = msg.pretty_json();
         let raw_md = format!("```json\n{}\n```", raw_json);
-        let raw_text_view = TextView::markdown("raw-json", raw_md, window, cx);
+        let raw_text_view = TextView::markdown("raw-json", raw_md);
 
         // Build accordion
         let mut accordion = Accordion::new("detail-sections")

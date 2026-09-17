@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
-use gpui_component::{ActiveTheme as _, StyledExt};
+use gpui_kit::{
+    component::{ActiveTheme as _, StyledExt},
+    *,
+};
 
 #[derive(IntoElement)]
 pub struct MessageItem {

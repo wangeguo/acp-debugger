@@ -12,9 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
-use gpui_component::{Root, TitleBar};
-use gpui_component_assets::Assets;
+use gpui_kit::{
+    assets::Assets,
+    component::{Root, TitleBar},
+    *,
+};
 
 mod app;
 #[allow(dead_code)]
@@ -24,11 +26,11 @@ mod models;
 mod panels;
 
 fn main() {
-    let app = Application::new().with_assets(Assets);
+    let app = gpui_kit::application().with_assets(Assets);
 
     app.run(|cx| {
         // This must be called before using any GPUI Component features.
-        gpui_component::init(cx);
+        gpui_kit::init(cx);
         panels::AgentPanel::init(cx);
 
         cx.spawn(async move |cx| {

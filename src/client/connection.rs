@@ -15,7 +15,7 @@
 use std::collections::HashMap;
 
 use futures::{channel::oneshot, StreamExt};
-use gpui::*;
+use gpui_kit::*;
 use serde_json::Value;
 
 use crate::models::{AcpMessage, AgentConfig, AgentStatus};
@@ -219,11 +219,8 @@ impl AcpConnection {
                 let Some(entity) = this.upgrade() else {
                     break;
                 };
-                let Ok(should_continue) =
-                    cx.update_entity(&entity, |conn, cx| conn.handle_transport_message(msg, cx))
-                else {
-                    break;
-                };
+                let should_continue =
+                    cx.update_entity(&entity, |conn, cx| conn.handle_transport_message(msg, cx));
                 if !should_continue {
                     break;
                 }
@@ -231,7 +228,7 @@ impl AcpConnection {
 
             // Transport closed: update status
             if let Some(entity) = this.upgrade() {
-                let _ = cx.update_entity(&entity, |conn, cx| {
+                cx.update_entity(&entity, |conn, cx| {
                     if conn.status != AgentStatus::Disconnected {
                         conn.set_status(AgentStatus::Disconnected, cx);
                     }
@@ -336,14 +333,14 @@ impl AcpConnection {
         cx.spawn(async move |this, cx| match task.await {
             Ok(_) => {
                 if let Some(entity) = this.upgrade() {
-                    let _ = cx.update_entity(&entity, |conn, cx| {
+                    cx.update_entity(&entity, |conn, cx| {
                         conn.set_status(AgentStatus::Connected, cx);
                     });
                 }
             }
             Err(_) => {
                 if let Some(entity) = this.upgrade() {
-                    let _ = cx.update_entity(&entity, |conn, cx| {
+                    cx.update_entity(&entity, |conn, cx| {
                         conn.set_status(AgentStatus::Error, cx);
                     });
                 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
+use gpui_kit::*;
 use serde_json::Value;
 
 use super::{connection::AcpConnection, error::ClientError};

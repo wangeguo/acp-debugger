@@ -14,12 +14,15 @@
 
 #![allow(dead_code)]
 
-use gpui::{prelude::*, *};
-use gpui_component::{
-    button::Button,
-    h_flex,
-    input::{Input, InputState},
-    v_flex, ActiveTheme as _, StyledExt as _,
+use gpui_kit::{
+    component::{
+        button::Button,
+        h_flex,
+        input::{Input, InputState},
+        v_flex, ActiveTheme as _, StyledExt as _,
+    },
+    prelude::*,
+    *,
 };
 
 use crate::models::{

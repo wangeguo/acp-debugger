@@ -14,13 +14,16 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use gpui::{prelude::*, *};
-use gpui_component::{
-    button::{Button, ButtonVariants as _},
-    h_flex,
-    input::{Input, InputState},
-    radio::RadioGroup,
-    v_flex, ActiveTheme as _, StyledExt as _, WindowExt as _,
+use gpui_kit::{
+    component::{
+        button::{Button, ButtonVariants as _},
+        h_flex,
+        input::{Input, InputState, Textarea, TextareaState},
+        radio::RadioGroup,
+        v_flex, ActiveTheme as _, StyledExt as _, WindowExt as _,
+    },
+    prelude::*,
+    *,
 };
 
 use crate::models::{AgentConfig, AgentRegistry, AuthMethod};
@@ -28,8 +31,8 @@ use crate::models::{AgentConfig, AgentRegistry, AuthMethod};
 pub struct AgentForm {
     name_input: Entity<InputState>,
     endpoint_input: Entity<InputState>,
-    args_input: Entity<InputState>,
-    env_input: Entity<InputState>,
+    args_input: Entity<TextareaState>,
+    env_input: Entity<TextareaState>,
     auth_method_index: Option<usize>,
     auth_credential_input: Entity<InputState>,
     timeout_input: Entity<InputState>,
@@ -49,17 +52,11 @@ impl AgentForm {
             cx.new(|cx| InputState::new(window, cx).placeholder("/path/to/agent or command"));
 
         let args_input = cx.new(|cx| {
-            InputState::new(window, cx)
-                .placeholder("One argument per line")
-                .multi_line(true)
-                .auto_grow(2, 5)
+            TextareaState::new(window, cx).placeholder("One argument per line").auto_grow(2, 5)
         });
 
         let env_input = cx.new(|cx| {
-            InputState::new(window, cx)
-                .placeholder("KEY=VALUE (one per line)")
-                .multi_line(true)
-                .auto_grow(2, 5)
+            TextareaState::new(window, cx).placeholder("KEY=VALUE (one per line)").auto_grow(2, 5)
         });
 
         let auth_credential_input =
@@ -173,14 +170,14 @@ impl Render for AgentForm {
                 v_flex()
                     .gap_1()
                     .child(field_label("Arguments", false, cx))
-                    .child(Input::new(&self.args_input)),
+                    .child(Textarea::new(&self.args_input)),
             )
             // Environment
             .child(
                 v_flex()
                     .gap_1()
                     .child(field_label("Environment", false, cx))
-                    .child(Input::new(&self.env_input)),
+                    .child(Textarea::new(&self.env_input)),
             )
             // Auth Method
             .child(

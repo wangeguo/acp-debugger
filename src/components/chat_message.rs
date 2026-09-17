@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::*;
-use gpui_component::{
-    collapsible::Collapsible, h_flex, v_flex, ActiveTheme as _, IconName, StyledExt,
+use gpui_kit::{
+    component::{collapsible::Collapsible, h_flex, v_flex, ActiveTheme as _, IconName, StyledExt},
+    *,
 };
 
 // ── Role ─────────────────────────────────────────────────────────────

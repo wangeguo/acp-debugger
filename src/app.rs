@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui::{prelude::*, *};
-use gpui_component::{
-    resizable::{h_resizable, resizable_panel},
-    v_flex, Root, TitleBar,
+use gpui_kit::{
+    component::{
+        resizable::{h_resizable, resizable_panel},
+        v_flex, Root, TitleBar,
+    },
+    prelude::*,
+    *,
 };
 
 use crate::{
