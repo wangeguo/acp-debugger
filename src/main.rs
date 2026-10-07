@@ -12,11 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use gpui_kit::{
-    assets::Assets,
-    component::{Root, TitleBar},
-    *,
-};
+use gpui_kit::{assets::Assets, component::TitleBar, *};
 
 mod app;
 #[allow(dead_code)]
@@ -33,21 +29,17 @@ fn main() {
         gpui_kit::init(cx);
         panels::AgentPanel::init(cx);
 
-        cx.spawn(async move |cx| {
-            let window_options = WindowOptions {
-                // Setup GPUI to use custom title bar
-                titlebar: Some(TitleBar::title_bar_options()),
-                ..Default::default()
-            };
-            cx.open_window(window_options, |window, cx| {
-                let view = cx.new(|cx| app::AcpDebugger::new(window, cx));
-                // This first level on the window, should be a Root.
-                cx.new(|cx| Root::new(view, window, cx))
-            })?;
-
-            Ok::<_, anyhow::Error>(())
+        let window_options = WindowOptions {
+            // Setup GPUI to use custom title bar
+            titlebar: Some(TitleBar::title_bar_options()),
+            ..Default::default()
+        };
+        // open_window wraps the content in a Base Root, which hosts the
+        // dialog, sheet and notification layers automatically.
+        gpui_kit::open_window(window_options, cx, |window, cx| {
+            cx.new(|cx| app::AcpDebugger::new(window, cx))
         })
-        .detach();
+        .expect("failed to open window");
 
         cx.activate(true);
     });
