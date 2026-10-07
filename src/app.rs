@@ -15,7 +15,7 @@
 use gpui_kit::{
     component::{
         resizable::{h_resizable, resizable_panel},
-        v_flex, Root, TitleBar,
+        v_flex, TitleBar,
     },
     prelude::*,
     *,
@@ -42,9 +42,7 @@ impl AcpDebugger {
 }
 
 impl Render for AcpDebugger {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let sheet_layer = Root::render_sheet_layer(window, cx);
-
+    fn render(&mut self, _window: &mut Window, _cx: &mut Context<Self>) -> impl IntoElement {
         v_flex()
             .size_full()
             .child(
@@ -59,6 +57,5 @@ impl Render for AcpDebugger {
                         .child(resizable_panel().child(MessagePanel)),
                 ),
             )
-            .children(sheet_layer)
     }
 }
